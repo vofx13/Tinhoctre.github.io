@@ -39,7 +39,7 @@
             flex: 1;
             padding: 15px;
             display: none; 
-            overflow-y: auto; /* Cho phép cuộn nếu dài */
+            overflow-y: auto; 
         }
 
         .dang-hien-thi {
@@ -67,6 +67,8 @@
             border-radius: 5px;
             margin-bottom: 10px;
             border-left: 5px solid #007bff;
+            font-size: 16px;
+            line-height: 1.4;
         }
 
         .menu-duoi {
@@ -89,7 +91,6 @@
             color: #007bff;
         }
 
-        /* Lớp nền mờ thông báo */
         .lop-nen-mo {
             display: none; 
             position: absolute; 
@@ -114,7 +115,6 @@
         .hop-noi-dung h2 { color: #dc3545; margin: 10px 0; font-size: 24px; }
         .hop-noi-dung p { font-size: 20px; font-weight: bold; margin-bottom: 20px; color: #333; }
         
-        /* CSS cho Module Chat (Tâm Giao) */
         .khung-chat {
             height: 380px; 
             background: #e9ecef; 
@@ -142,10 +142,10 @@
     <div class="tieu-de-trang">SILVER DIGITAL</div>
 
     <div id="man-lua-dao" class="man-hinh dang-hien-thi">
-        <h3>Cảnh giác lừa đảo</h3>
-        <p>Có tin nhắn mới:</p>
+        <h3>Tập phân biệt tin nhắn</h3>
+        <p>Có tin nhắn mới gửi đến:</p>
         <div class="tin-nhan-mau" id="noi-dung-tin"></div>
-        <button class="nut-bam nut-do" onclick="bamNut(true)">Nhấn vào link</button>
+        <button class="nut-bam nut-do" onclick="bamNut(true)">Nhấn vào xem</button>
         <button class="nut-bam nut-xanh" onclick="bamNut(false)">Xóa tin nhắn</button>
     </div>
 
@@ -168,7 +168,7 @@
         <h3 style="margin-top: 0;">Trợ lí ảo của ông bà</h3>
         <div class="khung-chat" id="vung-chat">
             <div class="tin-nhan-bot">
-                🤖 Con chào ông bà ạ!Con là trợ lí ảo của ông bà ạ. Ông bà muốn biết gì, cứ nhắn cho con nhé.
+                🤖 Con chào ông bà ạ! Con là trợ lí ảo của ông bà ạ. Ông bà muốn biết gì, cứ nhắn cho con nhé.
             </div>
         </div>
         <div style="display: flex; gap: 5px;">
@@ -189,7 +189,7 @@
             <div style="font-size: 60px;">⚠️</div>
             <h2>CẢNH BÁO NGUY HIỂM!</h2>
             <p>Ông bà ơi, đừng bấm! Đây là lừa đảo đấy.</p>
-            <button class="nut-bam nut-xanh" onclick="dongThongBao()">Con đã hiểu rồi ạ</button>
+            <button class="nut-bam nut-xanh" onclick="dongThongBao()">Tôi đã hiểu</button>
         </div>
     </div>
 </div>
@@ -219,7 +219,7 @@ function noi(vanBan) {
 
         loiNoiHienTai.onerror = (e) => {
             if (e.error !== 'interrupted') {
-                console.error("Lỗi phát âm thanh thực sự:", e.error);
+                console.error("Lỗi phát âm:", e.error);
             }
         };
         window.speechSynthesis.resume(); 
@@ -244,12 +244,11 @@ function doiTab(idManHinh, nut) {
     if (idManHinh !== 'man-qr' && typeof mayQuet !== 'undefined' && mayQuet) {
         mayQuet.stop().catch(err => console.log("Camera đã tắt"));
     }
-    if (idManHinh === 'man-qr' || idManHinh === 'man-thuoc') { randomTinNhan(); }
-    
-    // Đọc lời chào khi mở tab Tâm giao
-    if (idManHinh === 'man-tam-giao') {
-        noi("Ông bà muốn biết gì ạ?");
+    if (idManHinh === 'man-qr' || idManHinh === 'man-thuoc' || idManHinh === 'man-lua-dao') { 
+        if(idManHinh === 'man-lua-dao') randomTinNhan(); 
     }
+    
+    if (idManHinh === 'man-tam-giao') { noi("Ông bà muốn biết gì ạ?"); }
 }
 
 // --- MODULE 4: TÂM GIAO ---
@@ -332,31 +331,65 @@ function hoiTroLy() {
 }
 
 document.getElementById('cau-hoi-ai').addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') {
-        hoiTroLy();
-    }
+    if (e.key === 'Enter') { hoiTroLy(); }
 });
 
-// --- MODULE 1: LỪA ĐẢO ---
+// --- MODULE 1: LỪA ĐẢO VÀ AN TOÀN (CẬP NHẬT MỚI) ---
+// Thêm nhãn "laLuaDao" để phân biệt tin thật và giả
 var danhSachTinNhan = [
-    '"Chúc mừng bạn trúng thưởng 1 tỷ đồng! Nhấn vào link: bit.ly/trung-thuong để nhận."',
-    '"Ngân hàng thông báo: Tài khoản của bạn sắp bị khóa. Xác minh tại: tinyurl.com/xac-minh"',
-    '"Bưu điện: Gói hàng của bạn đang bị giữ. Cập nhật địa chỉ: bit.ly/cap-nhat-dia-chi"'
+    // --- CÁC TIN NHẮN LỪA ĐẢO ---
+    { noiDung: '"Chúc mừng bạn trúng thưởng 1 tỷ đồng! Nhấn vào link: bit.ly/trung-thuong để nhận."', laLuaDao: true },
+    { noiDung: '"Ngân hàng thông báo: Tài khoản của bạn sắp bị khóa. Xác minh tại: tinyurl.com/xac-minh"', laLuaDao: true },
+    { noiDung: '"Bưu điện: Gói hàng của bạn đang bị giữ. Cập nhật địa chỉ: bit.ly/cap-nhat-dia-chi"', laLuaDao: true },
+    { noiDung: '"Cảnh sát Giao thông Việt Nam: Hồ sơ vi phạm giao thông được lưu trữ dưới tên của bạn. Vui lòng truy cập https://dichvucongg.top/vn"', laLuaDao: true },
+    { noiDung: '"Bạn có một tin nhắn thoại mới. Nghe ngay tại: bit.ly/nghe-tin-nhan"', laLuaDao: true },
+    { noiDung: '"Chung toi phat hien tai khoan cua ban dang tieu dung o nuoc ngoai, vui long dang nhap sacombank.vn-i.xyz de huy giao dich"', laLuaDao: true },
+    
+    // --- CÁC TIN NHẮN AN TOÀN (MỚI THÊM) ---
+    { noiDung: '"Viettel: Tai khoan cua quy khach con 15.000d. Vui long nap them de khong gian doan lien lac."', laLuaDao: false },
+    { noiDung: '"Con gái: Mẹ ơi, cuối tuần này vợ chồng con cho các cháu về chơi với ông bà nhé!"', laLuaDao: false },
+    { noiDung: '"Cháu nội: Ông nội ơi, con vừa thi học kỳ xong, con được điểm 10 toán ạ!"', laLuaDao: false },
+    { noiDung: '"Tổ trưởng dân phố: Kính mời các ông bà chiều nay 5h ra nhà văn hóa họp tổ dân phố ạ."', laLuaDao: false },
+    { noiDung: '"Dự báo thời tiết: Đêm nay có mưa rào rải rác. Nhiệt độ thấp nhất 22 độ C."', laLuaDao: false }
 ];
+
+var tinNhanHienTai = null; // Biến lưu trữ tin nhắn đang hiển thị trên màn hình
+
 function randomTinNhan() {
     var randomIndex = Math.floor(Math.random() * danhSachTinNhan.length);
-    document.getElementById('noi-dung-tin').innerHTML = danhSachTinNhan[randomIndex];
+    tinNhanHienTai = danhSachTinNhan[randomIndex];
+    document.getElementById('noi-dung-tin').innerHTML = tinNhanHienTai.noiDung;
 }
-function bamNut(coLua) {
-    if(coLua) {
-        document.getElementById('thong-bao-gia').style.display = 'flex';
-        noi("Ông bà ơi, đừng bấm! Đây là lừa đảo đấy.");
+
+function bamNut(nhanLink) {
+    if (tinNhanHienTai.laLuaDao) {
+        // Nếu là tin lừa đảo
+        if (nhanLink) {
+            // Ông bà lỡ bấm nút Đỏ (Xem/Trả lời)
+            document.getElementById('thong-bao-gia').style.display = 'flex';
+            noi("Ông bà ơi, đừng bấm! Đây là lừa đảo đấy.");
+        } else {
+            // Ông bà bấm nút Xanh (Xóa tin)
+            alert("Đúng rồi ạ! Ông bà giỏi quá.");
+            noi("Đúng rồi ạ! Ông bà rất cảnh giác. Hãy xóa tin nhắn này đi cho an toàn.");
+            randomTinNhan(); 
+        }
     } else {
-        alert("Đúng rồi ạ! Ông bà giỏi quá.");
-        noi("Đúng rồi ạ! Ông bà rất cảnh giác. Hãy xóa tin nhắn này đi cho an toàn.");
-        randomTinNhan(); 
+        // Nếu là tin an toàn (Con cháu, tổng đài thật)
+        if (nhanLink) {
+            // Ông bà bấm nút Đỏ (Xem/Trả lời) -> An toàn
+            alert("Tuyệt vời! Đây là tin nhắn an toàn.");
+            noi("Dạ đúng rồi, đây là tin nhắn an toàn từ người quen hoặc tổng đài, ông bà có thể xem ạ.");
+            randomTinNhan();
+        } else {
+            // Ông bà bấm nút Xanh (Xóa tin) -> Cũng không sao
+            alert("Ông bà đã xóa tin nhắn.");
+            noi("Dạ, đây là tin nhắn thật, nhưng ông bà xóa đi cho nhẹ máy cũng được ạ.");
+            randomTinNhan();
+        }
     }
 }
+
 function dongThongBao() {
     document.getElementById('thong-bao-gia').style.display = 'none';
     randomTinNhan();
@@ -365,11 +398,10 @@ function dongThongBao() {
 // --- MODULE 2: QUÉT QR ---
 var mayQuet;
 var dangXuLy = false; 
-
 function moCamera() {
     const vungHienThiKetQua = document.getElementById('ket-qua-qr');
     vungHienThiKetQua.innerText = "Đang tìm mã QR...";
-    vungHienThiKetQua.style.color = "black"; // Trả lại màu chữ bình thường
+    vungHienThiKetQua.style.color = "black"; 
 
     if (!mayQuet) { mayQuet = new Html5Qrcode("khu-vuc-cam"); }
     
@@ -377,14 +409,11 @@ function moCamera() {
         { facingMode: "environment" }, { fps: 15, qrbox: 250 },
         function(ketQua) {
             if (!dangXuLy) { 
-                dangXuLy = true; // Khóa lại để xử lý
-
-                // Hiện thông báo thành công và đọc lên
+                dangXuLy = true; 
                 vungHienThiKetQua.innerText = "Quét mã thành công!";
-                vungHienThiKetQua.style.color = "#28a745"; // Đổi màu xanh lá
+                vungHienThiKetQua.style.color = "#28a745"; 
                 noi("Dạ, quét mã thành công rồi ạ!");
 
-                // Nghỉ 3 giây rồi cho phép quét tiếp
                 setTimeout(() => { 
                     dangXuLy = false; 
                     vungHienThiKetQua.innerText = "Đang tìm mã tiếp theo...";
