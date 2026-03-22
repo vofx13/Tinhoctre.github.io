@@ -14,7 +14,6 @@
             justify-content: center;
         }
 
-        /* Khung điện thoại giả lập */
         .dien-thoai {
             width: 360px;
             height: 640px;
@@ -36,18 +35,17 @@
             font-weight: bold;
         }
 
-        /* Các màn hình */
         .man-hinh {
             flex: 1;
             padding: 15px;
-            display: none; /* Mặc định ẩn hết */
+            display: none; 
+            overflow-y: auto; /* Cho phép cuộn nếu dài */
         }
 
         .dang-hien-thi {
-            display: block; /* Chỉ hiện màn hình nào có class này */
+            display: block; 
         }
 
-        /* Nút bấm cho ông bà (phải to và rõ) */
         .nut-bam {
             width: 100%;
             padding: 15px;
@@ -71,7 +69,6 @@
             border-left: 5px solid #007bff;
         }
 
-        /* Thanh menu dưới cùng */
         .menu-duoi {
             height: 50px;
             background: #eee;
@@ -92,41 +89,50 @@
             color: #007bff;
         }
 
-        /* --- PHẦN CSS CHO HỘP THÔNG BÁO --- */
-        /* Lớp nền mờ bao phủ màn hình điện thoại */
+        /* Lớp nền mờ thông báo */
         .lop-nen-mo {
-            display: none; /* Mặc định ẩn */
-            position: absolute; /* Chỉ bao phủ trong khung .dien-thoai */
+            display: none; 
+            position: absolute; 
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.7); /* Làm tối nền xung quanh */
-            z-index: 9999; /* Luôn nằm trên cùng */
+            background: rgba(0, 0, 0, 0.7); 
+            z-index: 9999; 
             justify-content: center;
             align-items: center;
         }
 
-        /* Khung nội dung chính của thông báo */
         .hop-noi-dung {
             background: white;
             width: 85%;
             padding: 30px 20px;
             border-radius: 20px;
             text-align: center;
-            border: 5px solid #dc3545; /* Viền đỏ nổi bật */
+            border: 5px solid #dc3545; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .hop-noi-dung h2 {
-            color: #dc3545;
-            margin: 10px 0;
-            font-size: 24px;
+        .hop-noi-dung h2 { color: #dc3545; margin: 10px 0; font-size: 24px; }
+        .hop-noi-dung p { font-size: 20px; font-weight: bold; margin-bottom: 20px; color: #333; }
+        
+        /* CSS cho Module Chat (Tâm Giao) */
+        .khung-chat {
+            height: 380px; 
+            background: #e9ecef; 
+            border-radius: 10px; 
+            padding: 10px; 
+            overflow-y: auto; 
+            margin-bottom: 10px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px;
         }
-
-        .hop-noi-dung p {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #333;
+        .tin-nhan-bot {
+            background: white; padding: 10px; border-radius: 10px; 
+            align-self: flex-start; max-width: 80%; border: 1px solid #ccc;
+        }
+        .tin-nhan-nguoi {
+            background: #007bff; color: white; padding: 10px; border-radius: 10px; 
+            align-self: flex-end; max-width: 80%;
         }
     </style>
 </head>
@@ -138,8 +144,7 @@
     <div id="man-lua-dao" class="man-hinh dang-hien-thi">
         <h3>Cảnh giác lừa đảo</h3>
         <p>Có tin nhắn mới:</p>
-        <div class="tin-nhan-mau" id="noi-dung-tin">
-            </div>
+        <div class="tin-nhan-mau" id="noi-dung-tin"></div>
         <button class="nut-bam nut-do" onclick="bamNut(true)">Nhấn vào link</button>
         <button class="nut-bam nut-xanh" onclick="bamNut(false)">Xóa tin nhắn</button>
     </div>
@@ -159,10 +164,24 @@
         <div id="danh-sach-thuoc" style="margin-top: 15px; font-size: 18px;"></div>
     </div>
 
+    <div id="man-tam-giao" class="man-hinh">
+        <h3 style="margin-top: 0;">Trợ lí ảo của ông bà</h3>
+        <div class="khung-chat" id="vung-chat">
+            <div class="tin-nhan-bot">
+                🤖 Con chào ông bà ạ!Con là trợ lí ảo của ông bà ạ. Ông bà muốn biết gì, cứ nhắn cho con nhé.
+            </div>
+        </div>
+        <div style="display: flex; gap: 5px;">
+            <input type="text" id="cau-hoi-ai" placeholder="Nhập câu hỏi ở đây..." style="flex: 1; padding: 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px;">
+            <button class="nut-bam nut-xanh" style="width: auto; margin: 0; padding: 10px 15px;" onclick="hoiTroLy()">Gửi</button>
+        </div>
+    </div>
+
     <div class="menu-duoi">
         <div class="nut-menu chon" onclick="doiTab('man-lua-dao', this)">🛡️ An toàn</div>
         <div class="nut-menu" onclick="doiTab('man-qr', this)">📷 Quét mã</div>
         <div class="nut-menu" onclick="doiTab('man-thuoc', this)">💊 Thuốc</div>
+        <div class="nut-menu" onclick="doiTab('man-tam-giao', this)">💬 Trợ lí ảo</div>
     </div>
 
     <div id="thong-bao-gia" class="lop-nen-mo">
@@ -176,128 +195,217 @@
 </div>
 
 <script>
-    // Dữ liệu tin nhắn mẫu
-    var danhSachTinNhan = [
-        '"Chúc mừng bạn trúng thưởng 1 tỷ đồng! Nhấn vào link: bit.ly/trung-thuong để nhận."',
-        '"Ngân hàng thông báo: Tài khoản của bạn sắp bị khóa. Xác minh tại: tinyurl.com/xac-minh"',
-        '"Bưu điện: Gói hàng của bạn đang bị giữ. Cập nhật địa chỉ: bit.ly/cap-nhat-dia-chi"',
-        '"Cơ hội đầu tư sinh lời 300% trong 24h! Đăng ký ngay: bit.ly/dau-tu-loi"',
-        '"Công an tỉnh: Tài khoản bạn liên quan đến vụ án. Hợp tác tại: bit.ly/cong-an"',
-        '"Thẻ tín dụng của bạn đã bị khóa do nợ quá hạn. Gia hạn: bit.ly/gia-han-the"',
-        '"Bạn trúng iPhone 16 Pro Max miễn phí! Nhận ngay: bit.ly/nhan-iphone"',
-        '"Mạng di động tặng 500.000đ tiền nạp. Xác nhận: bit.ly/nap-tien"',
-        '"Tuyển dụng làm việc tại nhà, thu nhập 20tr/tháng. Đăng ký: bit.ly/viec-lam"',
-        '"Facebook thông báo: Phát hiện đăng nhập lạ. Xác minh: bit.ly/bao-mat-fb"'
-    ];
+// --- KHỞI TẠO GIỌNG NÓI (Đã sửa lỗi) ---
+let vietnameseVoice = null;
+let loiNoiHienTai = null; 
 
-    // --- CÁC HÀM CHUNG ---
+function loadVoices() {
+    const voices = window.speechSynthesis.getVoices();
+    vietnameseVoice = voices.find(v => v.lang === 'vi-VN' || v.lang.includes('vi'));
+}
+window.speechSynthesis.onvoiceschanged = loadVoices;
+loadVoices();
 
-    // Hàm random tin nhắn
-    function randomTinNhan() {
-        var randomIndex = Math.floor(Math.random() * danhSachTinNhan.length);
-        var tinNhanMoi = danhSachTinNhan[randomIndex];
-        document.getElementById('noi-dung-tin').innerHTML = tinNhanMoi;
+function noi(vanBan) {
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+
+    setTimeout(() => {
+        loiNoiHienTai = new SpeechSynthesisUtterance(vanBan);
+        if (vietnameseVoice) { loiNoiHienTai.voice = vietnameseVoice; }
+        loiNoiHienTai.lang = 'vi-VN';
+        loiNoiHienTai.rate = 0.85; 
+        loiNoiHienTai.pitch = 1;
+
+        loiNoiHienTai.onerror = (e) => {
+            if (e.error !== 'interrupted') {
+                console.error("Lỗi phát âm thanh thực sự:", e.error);
+            }
+        };
+        window.speechSynthesis.resume(); 
+        window.speechSynthesis.speak(loiNoiHienTai);
+    }, 50); 
+}
+
+// --- LOGIC ĐỔI TAB ---
+function doiTab(idManHinh, nut) {
+    var tatca = document.getElementsByClassName('man-hinh');
+    for(var i=0; i<tatca.length; i++) {
+        tatca[i].classList.remove('dang-hien-thi');
+    }
+    document.getElementById(idManHinh).classList.add('dang-hien-thi');
+
+    var tatcaNut = document.getElementsByClassName('nut-menu');
+    for(var i=0; i<tatcaNut.length; i++) {
+        tatcaNut[i].classList.remove('chon');
+    }
+    nut.classList.add('chon');
+
+    if (idManHinh !== 'man-qr' && typeof mayQuet !== 'undefined' && mayQuet) {
+        mayQuet.stop().catch(err => console.log("Camera đã tắt"));
+    }
+    if (idManHinh === 'man-qr' || idManHinh === 'man-thuoc') { randomTinNhan(); }
+    
+    // Đọc lời chào khi mở tab Tâm giao
+    if (idManHinh === 'man-tam-giao') {
+        noi("Ông bà muốn biết gì ạ?");
+    }
+}
+
+// --- MODULE 4: TÂM GIAO (MỚI) ---
+function hoiTroLy() {
+    var input = document.getElementById('cau-hoi-ai');
+    var cauHoi = input.value.trim();
+    if (!cauHoi) return;
+
+    var vungChat = document.getElementById('vung-chat');
+
+    // 1. In câu hỏi của người dùng ra màn hình
+    vungChat.innerHTML += `<div class="tin-nhan-nguoi">${cauHoi}</div>`;
+    input.value = ""; // Xóa trắng ô nhập
+    vungChat.scrollTop = vungChat.scrollHeight; // Tự động cuộn xuống dưới cùng
+
+    // 2. Chuyển chữ thường để dễ tìm từ khóa
+    var tuKhoa = cauHoi.toLowerCase();
+    var cauTraLoi = "";
+
+    // 3. Xử lý Logic tìm từ khóa (Mô phỏng AI)
+// --- LOGIC XỬ LÝ TỪ KHÓA MỞ RỘNG (MÔ PHỎNG AI) ---
+    var tuKhoa = cauHoi.toLowerCase();
+    var cauTraLoi = "";
+
+    // 1. NHÓM GIẤC NGỦ
+    if (tuKhoa.includes("ngủ") || tuKhoa.includes("mất ngủ") || tuKhoa.includes("khó ngủ") || 
+        tuKhoa.includes("trằn trọc") || tuKhoa.includes("ngủ không ngon") || tuKhoa.includes("ngủ ít")) {
+        cauTraLoi = "Dạ, để ngủ ngon hơn, ông bà nên ngâm chân nước gừng ấm trước khi ngủ, tránh uống trà xanh hay cà phê sau 4 giờ chiều và giữ phòng tối, yên tĩnh ạ.";
+    } 
+
+    // 2. NHÓM THỜI TIẾT
+    else if (tuKhoa.includes("thời tiết") || tuKhoa.includes("nắng") || tuKhoa.includes("mưa") || 
+             tuKhoa.includes("bão") || tuKhoa.includes("lạnh") || tuKhoa.includes("nóng") || tuKhoa.includes("dự báo")) {
+        cauTraLoi = "Dạ, dạo này thời tiết hay thay đổi thất thường. Nếu trời lạnh ông bà nhớ quàng khăn ấm, còn nếu nắng gắt thì nên ở trong nhà cho mát, đừng ra ngoài lúc giữa trưa ông bà nhé.";
+    } 
+
+    // 3. NHÓM DINH DƯỠNG & ĂN UỐNG
+    else if (tuKhoa.includes("ăn") || tuKhoa.includes("uống") || tuKhoa.includes("đói") || 
+             tuKhoa.includes("tiêu hóa") || tuKhoa.includes("món gì") || tuKhoa.includes("đầy bụng")) {
+        cauTraLoi = "Dạ, ở tuổi mình ông bà nên ăn thức ăn mềm, nấu chín kỹ và chia nhỏ bữa ăn ạ. Ông bà nhớ ăn nhiều rau xanh, bớt muối và uống đủ nước mỗi ngày để tốt cho tiêu hóa nhé.";
     }
 
-    // Hàm đọc giọng nói hướng dẫn cho ông bà
-    function noi(vanBan) {
-        if ('speechSynthesis' in window) {
-            // Hủy các câu đang đọc dở để đọc câu mới ngay
-            window.speechSynthesis.cancel();
-            var loiNoi = new SpeechSynthesisUtterance(vanBan);
-            loiNoi.lang = 'vi-VN';
-            window.speechSynthesis.speak(loiNoi);
-        }
+    // 4. NHÓM VẬN ĐỘNG & XƯƠNG KHỚP
+    else if (tuKhoa.includes("đi bộ") || tuKhoa.includes("tập thể dục") || tuKhoa.includes("vận động") || 
+             tuKhoa.includes("đau lưng") || tuKhoa.includes("mỏi gối") || tuKhoa.includes("xương khớp")) {
+        cauTraLoi = "Dạ, việc vận động nhẹ nhàng rất tốt ạ. Ông bà có thể đi bộ chậm vào buổi sáng hoặc tập các động tác xoay khớp cổ tay, cổ chân nhẹ nhàng tại chỗ để khí huyết lưu thông ạ.";
     }
 
-    // Hàm chuyển màn hình
-    function doiTab(idManHinh, nut) {
-        // Ẩn hết các màn hình đi
-        var tatca = document.getElementsByClassName('man-hinh');
-        for(var i=0; i<tatca.length; i++) {
-            tatca[i].classList.remove('dang-hien-thi');
-        }
-        
-        // Hiện màn hình cần xem
-        document.getElementById(idManHinh).classList.add('dang-hien-thi');
-
-        // Đổi màu nút menu
-        var tatcaNut = document.getElementsByClassName('nut-menu');
-        for(var i=0; i<tatcaNut.length; i++) {
-            tatcaNut[i].classList.remove('chon');
-        }
-        nut.classList.add('chon');
-
-        // Nếu camera đang bật mà chuyển tab khác thì tắt camera
-        if (idManHinh !== 'man-qr' && mayQuet) {
-            mayQuet.stop().catch(err => console.log("Camera đã tắt"));
-        }
-
-        // Làm mới tin nhắn random khi chuyển qua trang Quét mã hoặc Thuốc (để khi quay lại có tin mới)
-        if (idManHinh === 'man-qr' || idManHinh === 'man-thuoc') {
-            randomTinNhan();
-        }
+    // 5. NHÓM CẢM XÚC & TÂM SỰ (GIẢM CÔ ĐƠN)
+    else if (tuKhoa.includes("buồn") || tuKhoa.includes("chán") || tuKhoa.includes("cô đơn") || 
+             tuKhoa.includes("nhớ con") || tuKhoa.includes("nhớ cháu") || tuKhoa.includes("một mình")) {
+        cauTraLoi = "Ông bà đừng buồn nhé, có con ở đây trò chuyện cùng ông bà mà. Hay là ông bà gọi điện cho các cháu qua Zalo một chút cho vui cửa vui nhà được không ạ?";
     }
 
-    // --- LOGIC MODULE LỪA ĐẢO ---
-
-    // Hàm xử lý khi nhấn nút trong màn hình An toàn
-    function bamNut(coLua) {
-        if(coLua) {
-            // HIỆN HỘP THÔNG BÁO CSS TÙY CHỈNH
-            document.getElementById('thong-bao-gia').style.display = 'flex';
-            noi("Ông bà ơi, đừng bấm! Đây là lừa đảo đấy.");
-        } else {
-            // Dùng alert mặc định cho trường hợp đúng để phân biệt
-            alert("Đúng rồi ạ! Ông bà giỏi quá.");
-            noi("Đúng rồi ạ! Ông bà rất cảnh giác. Hãy xóa tin nhắn này đi cho an toàn.");
-            randomTinNhan(); // Làm mới tin nhắn sau khi xóa thành công
-        }
+    // 6. NHÓM HỖ TRỢ CÔNG NGHỆ
+    else if (tuKhoa.includes("điện thoại") || tuKhoa.includes("zalo") || tuKhoa.includes("facebook") || 
+             tuKhoa.includes("gọi điện") || tuKhoa.includes("mạng") || tuKhoa.includes("wifi")) {
+        cauTraLoi = "Dạ, dùng điện thoại lúc đầu hơi khó một chút nhưng từ từ sẽ quen ạ. Nếu có chỗ nào chưa rõ, ông bà cứ hỏi con hoặc đợi các cháu về hướng dẫn thêm cho nhanh nhé.";
     }
 
-    // Hàm để đóng thông báo cảnh báo lừa đảo
-    function dongThongBao() {
-        document.getElementById('thong-bao-gia').style.display = 'none';
-        // Khi đóng, có thể random tin mới luôn
-        randomTinNhan();
+    // 7. NHÓM CẢNH BÁO SỨC KHỎE KHẨN CẤP
+    else if (tuKhoa.includes("đau đầu") || tuKhoa.includes("chóng mặt") || tuKhoa.includes("tức ngực") || 
+             tuKhoa.includes("ngã") || tuKhoa.includes("té") || tuKhoa.includes("cấp cứu")) {
+        cauTraLoi = "Trời ơi, ông bà đang thấy không khỏe ạ? Ông bà hãy ngồi xuống ngay lập tức và gọi thật to để con cháu biết, hoặc nhấn nút gọi khẩn cấp trên điện thoại ngay đi ạ!";
     }
 
-    // --- LOGIC MODULE QUÉT QR ---
-// --- LOGIC MODULE QUÉT QR (Đã cập nhật tính năng mở link) ---
-// --- LOGIC QUÉT QR TỰ ĐỘNG ---
+    // 8. NHÓM CHÀO HỎI & KHEN NGỢI
+    else if (tuKhoa.includes("chào") || tuKhoa.includes("hello") || tuKhoa.includes("tên gì") || 
+             tuKhoa.includes("giỏi") || tuKhoa.includes("ngoan")) {
+        cauTraLoi = "Dạ, con cảm ơn ông bà ạ! Con là Trợ lý Silver Digital, luôn sẵn sàng lắng nghe và hỗ trợ ông bà mọi lúc mọi nơi.";
+    }
+    else if (tuKhoa.includes("cảm ơn") || tuKhoa.includes("thank you") || tuKhoa.includes("tốt quá") || 
+             tuKhoa.includes("hay quá") || tuKhoa.includes("giúp con") || tuKhoa.includes("hữu ích")) {
+        cauTraLoi = "Ông bà khen con làm con vui quá ạ! Con sẽ cố gắng học hỏi thêm để giúp ông bà ngày càng tốt hơn nữa ạ.";
+    }
+    else if (tuKhoa.includes("tạm biệt") || tuKhoa.includes("bye") || tuKhoa.includes("hẹn gặp lại") || 
+             tuKhoa.includes("ngủ ngon") || tuKhoa.includes("chúc ngủ ngon")) {
+        cauTraLoi = "Dạ, chúc ông bà ngủ ngon và có những giấc mơ đẹp ạ! Con sẽ luôn ở đây khi ông bà cần nhé.";
+    }
+    else if (tuKhoa.includes("sức khỏe") || tuKhoa.includes("bệnh") || tuKhoa.includes("khỏe không") || 
+             tuKhoa.includes("tình hình sức khỏe") || tuKhoa.includes("khám bệnh") || tuKhoa.includes("uống thuốc")) {
+        cauTraLoi = "Dạ, ông bà có thể chia sẻ thêm về tình hình sức khỏe hiện tại được không ạ? Con sẽ cố gắng đưa ra những lời khuyên hữu ích nhất cho ông bà ạ.";
+    }
+    else if (tuKhoa.includes("gia đình") || tuKhoa.includes("con cháu") || tuKhoa.includes("các cháu") || 
+             tuKhoa.includes("gia đình mình") || tuKhoa.includes("các con") || tuKhoa.includes("các cháu")) {
+        cauTraLoi = "Dạ, gia đình là điều quý giá nhất ạ. Ông bà có muốn kể cho con nghe về các cháu, về những kỷ niệm đẹp với gia đình mình không ạ?";
+    }
+    else if (tuKhoa.includes("thời gian") || tuKhoa.includes("ngày tháng") || tuKhoa.includes("hôm nay") || 
+             tuKhoa.includes("bây giờ") || tuKhoa.includes("mấy giờ")) {
+        var ngayGio = new Date();
+        cauTraLoi = `Dạ, bây giờ là ${ngayGio.getHours()} giờ ${ngayGio.getMinutes()} phút ngày ${ngayGio.getDate()}/${ngayGio.getMonth()+1}/${ngayGio.getFullYear()} ạ.`;
+    }
+    // 9. TRƯỜNG HỢP KHÔNG CÓ TỪ KHÓA NÀO KHỚP
+    else {
+        cauTraLoi = "Dạ, ý của ông bà là sao ạ? Con chưa hiểu rõ lắm, ông bà có thể nói cụ thể hơn về sức khỏe, thời tiết hoặc chuyện gia đình được không ạ?";
+    }
+
+    // 4. In câu trả lời của Bot và Đọc lên (sau 0.5s để tạo cảm giác AI đang suy nghĩ)
+    setTimeout(() => {
+        vungChat.innerHTML += `<div class="tin-nhan-bot">🤖 ${cauTraLoi}</div>`;
+        vungChat.scrollTop = vungChat.scrollHeight;
+        noi(cauTraLoi);
+    }, 500);
+}
+
+// Cho phép bấm phím "Enter" để gửi tin nhắn thay vì phải bấm nút
+document.getElementById('cau-hoi-ai').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        hoiTroLy();
+    }
+});
+
+
+// --- MODULE 1: LỪA ĐẢO ---
+var danhSachTinNhan = [
+    '"Chúc mừng bạn trúng thưởng 1 tỷ đồng! Nhấn vào link: bit.ly/trung-thuong để nhận."',
+    '"Ngân hàng thông báo: Tài khoản của bạn sắp bị khóa. Xác minh tại: tinyurl.com/xac-minh"',
+    '"Bưu điện: Gói hàng của bạn đang bị giữ. Cập nhật địa chỉ: bit.ly/cap-nhat-dia-chi"'
+];
+function randomTinNhan() {
+    var randomIndex = Math.floor(Math.random() * danhSachTinNhan.length);
+    document.getElementById('noi-dung-tin').innerHTML = danhSachTinNhan[randomIndex];
+}
+function bamNut(coLua) {
+    if(coLua) {
+        document.getElementById('thong-bao-gia').style.display = 'flex';
+        noi("Ông bà ơi, đừng bấm! Đây là lừa đảo đấy.");
+    } else {
+        alert("Đúng rồi ạ! Ông bà giỏi quá.");
+        noi("Đúng rồi ạ! Ông bà rất cảnh giác. Hãy xóa tin nhắn này đi cho an toàn.");
+        randomTinNhan(); 
+    }
+}
+function dongThongBao() {
+    document.getElementById('thong-bao-gia').style.display = 'none';
+    randomTinNhan();
+}
+
+// --- MODULE 2: QUÉT QR ---
 var mayQuet;
-var dangXuLy = false; // Biến khóa để tránh mở 1 link nhiều lần cùng lúc
-
+var dangXuLy = false; 
 function moCamera() {
     const vungHienThiKetQua = document.getElementById('ket-qua-qr');
     vungHienThiKetQua.innerText = "Đang tìm mã QR...";
-    
-    if (!mayQuet) {
-        mayQuet = new Html5Qrcode("khu-vuc-cam");
-    }
-
+    if (!mayQuet) { mayQuet = new Html5Qrcode("khu-vuc-cam"); }
     mayQuet.start(
-        { facingMode: "environment" }, 
-        { 
-            fps: 15,    // Tăng tốc độ khung hình để nhận diện nhạy hơn
-            qrbox: 250  // Khung quét to hơn cho ông bà dễ căn chỉnh
-        },
+        { facingMode: "environment" }, { fps: 15, qrbox: 250 },
         function(ketQua) {
-            // NẾU PHÁT HIỆN MÃ QR:
             if (!dangXuLy) { 
-                dangXuLy = true; // Khóa lại để xử lý xong cái này đã
-                
+                dangXuLy = true; 
                 vungHienThiKetQua.innerText = "Đã tìm thấy: " + ketQua;
-                vungHienThiKetQua.style.color = "#28a745"; // Đổi màu chữ cho dễ nhìn
-                
-                // 1. Thông báo bằng giọng nói
+                vungHienThiKetQua.style.color = "#28a745"; 
                 noi("Con đã thấy mã rồi ạ. Đang kiểm tra nội dung.");
-
-                // 2. Kiểm tra nếu là đường link web
                 if (ketQua.startsWith("http")) {
                     setTimeout(function() {
                         window.open(ketQua, '_blank');
-                        // Sau 3 giây mới cho phép quét mã tiếp theo (tránh lặp lại)
                         setTimeout(() => { 
                             dangXuLy = false; 
                             vungHienThiKetQua.innerText = "Đang tìm mã tiếp theo...";
@@ -305,73 +413,62 @@ function moCamera() {
                         }, 3000);
                     }, 1000);
                 } else {
-                    // Nếu là văn bản bình thường (không phải link)
                     alert("Nội dung mã: " + ketQua);
-                    dangXuLy = false; // Mở khóa ngay để quét mã khác
+                    dangXuLy = false; 
                 }
             }
-        },
-        function(loi) {
-            // Hàm này chạy liên tục khi chưa thấy mã, cứ để trống để camera quét mượt
-        }
+        }, function(loi) {}
     ).catch(err => {
         vungHienThiKetQua.innerText = "Lỗi: " + err;
         noi("Camera chưa sẵn sàng ạ.");
     });
 }
-    var dsThuoc = [];
-    function themThuoc() {
-        var ten = document.getElementById('ten-thuoc').value;
-        var gio = document.getElementById('gio-uong').value;
-        if(ten == "" || gio == "") {
-            alert("Vui lòng điền đủ tên thuốc và giờ!");
-            return;
-        }
-        dsThuoc.push({ten: ten, gio: gio});
-        hienThiThuoc();
-        noi("Con đã ghi nhớ lịch uống thuốc " + ten + " lúc " + gio + " rồi ạ.");
-        // Xóa ô nhập
-        document.getElementById('ten-thuoc').value = "";
-        document.getElementById('gio-uong').value = "";
-    }
 
-    function hienThiThuoc() {
-        var vungHienThi = document.getElementById('danh-sach-thuoc');
-        vungHienThi.innerHTML = "";
-        if (dsThuoc.length === 0) {
-            vungHienThi.innerHTML = "<p style='color: #666; font-style: italic;'>Chưa có lịch nhắc nào.</p>";
-            return;
-        }
-        for(var i=0; i<dsThuoc.length; i++) {
-            vungHienThi.innerHTML += "<p style='margin: 5px 0;'>✅ <b>" + dsThuoc[i].gio + "</b>: " + dsThuoc[i].ten + "</p>";
-        }
+// --- MODULE 3: THUỐC ---
+var dsThuoc = [];
+function themThuoc() {
+    var ten = document.getElementById('ten-thuoc').value;
+    var gio = document.getElementById('gio-uong').value;
+    if(ten == "" || gio == "") {
+        alert("Vui lòng điền đủ tên thuốc và giờ!");
+        return;
     }
-
-    // --- KHỞI TẠO BAN ĐẦU ---
-    
-    // Random tin nhắn khi trang load
-    randomTinNhan();
-    // Hiển thị danh sách thuốc trống
+    dsThuoc.push({ten: ten, gio: gio});
     hienThiThuoc();
+    noi("Con đã ghi nhớ lịch uống thuốc " + ten + " lúc " + gio + " rồi ạ.");
+    document.getElementById('ten-thuoc').value = "";
+    document.getElementById('gio-uong').value = "";
+}
+function hienThiThuoc() {
+    var vungHienThi = document.getElementById('danh-sach-thuoc');
+    vungHienThi.innerHTML = "";
+    if (dsThuoc.length === 0) {
+        vungHienThi.innerHTML = "<p style='color: #666; font-style: italic;'>Chưa có lịch nhắc nào.</p>";
+        return;
+    }
+    for(var i=0; i<dsThuoc.length; i++) {
+        vungHienThi.innerHTML += "<p style='margin: 5px 0;'>✅ <b>" + dsThuoc[i].gio + "</b>: " + dsThuoc[i].ten + "</p>";
+    }
+}
 
-    // Kiểm tra giờ để nhắc thuốc mỗi 30 giây
-    var thuocDaNhac = {}; // Lưu lại để không nhắc liên tục trong cùng 1 phút
-
-    setInterval(function() {
-        var gioHeThong = new Date();
-        var gioPhut = gioHeThong.getHours().toString().padStart(2, '0') + ":" + 
-                      gioHeThong.getMinutes().toString().padStart(2, '0');
-        var ngayHienTai = gioHeThong.toDateString();
-        
-        for(var i=0; i<dsThuoc.length; i++) {
-            var keyNhac = ngayHienTai + "_" + gioPhut + "_" + dsThuoc[i].ten;
-            if(dsThuoc[i].gio === gioPhut && !thuocDaNhac[keyNhac]) {
-                noi("Ông bà ơi, đến giờ uống thuốc " + dsThuoc[i].ten + " rồi ạ!");
-                alert("ĐẾN GIỜ UỐNG THUỐC: " + dsThuoc[i].ten);
-                thuocDaNhac[keyNhac] = true; // Đánh dấu đã nhắc
-            }
+// --- CHẠY BAN ĐẦU ---
+randomTinNhan();
+hienThiThuoc();
+var thuocDaNhac = {}; 
+setInterval(function() {
+    var gioHeThong = new Date();
+    var gioPhut = gioHeThong.getHours().toString().padStart(2, '0') + ":" + 
+                  gioHeThong.getMinutes().toString().padStart(2, '0');
+    var ngayHienTai = gioHeThong.toDateString();
+    for(var i=0; i<dsThuoc.length; i++) {
+        var keyNhac = ngayHienTai + "_" + gioPhut + "_" + dsThuoc[i].ten;
+        if(dsThuoc[i].gio === gioPhut && !thuocDaNhac[keyNhac]) {
+            noi("Ông bà ơi, đến giờ uống thuốc " + dsThuoc[i].ten + " rồi ạ!");
+            alert("ĐẾN GIỜ UỐNG THUỐC: " + dsThuoc[i].ten);
+            thuocDaNhac[keyNhac] = true; 
         }
-    }, 30000);
+    }
+}, 30000);
 
 </script>
 </body>
