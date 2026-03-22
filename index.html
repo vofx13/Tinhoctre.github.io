@@ -153,7 +153,7 @@
         <h3>Tập quét mã QR</h3>
         <div id="khu-vuc-cam" style="width: 100%; height: 200px; background: #000; border-radius: 10px; overflow: hidden;"></div>
         <button class="nut-bam nut-vang" onclick="moCamera()">Bật Camera</button>
-        <p id="ket-qua-qr" style="word-break: break-all;">Chưa quét được gì...</p>
+        <p id="ket-qua-qr" style="word-break: break-all; font-weight: bold;">Chưa quét được gì...</p>
     </div>
 
     <div id="man-thuoc" class="man-hinh">
@@ -195,7 +195,7 @@
 </div>
 
 <script>
-// --- KHỞI TẠO GIỌNG NÓI (Đã sửa lỗi) ---
+// --- KHỞI TẠO GIỌNG NÓI ---
 let vietnameseVoice = null;
 let loiNoiHienTai = null; 
 
@@ -252,7 +252,7 @@ function doiTab(idManHinh, nut) {
     }
 }
 
-// --- MODULE 4: TÂM GIAO (MỚI) ---
+// --- MODULE 4: TÂM GIAO ---
 function hoiTroLy() {
     var input = document.getElementById('cau-hoi-ai');
     var cauHoi = input.value.trim();
@@ -260,63 +260,41 @@ function hoiTroLy() {
 
     var vungChat = document.getElementById('vung-chat');
 
-    // 1. In câu hỏi của người dùng ra màn hình
     vungChat.innerHTML += `<div class="tin-nhan-nguoi">${cauHoi}</div>`;
-    input.value = ""; // Xóa trắng ô nhập
-    vungChat.scrollTop = vungChat.scrollHeight; // Tự động cuộn xuống dưới cùng
+    input.value = ""; 
+    vungChat.scrollTop = vungChat.scrollHeight; 
 
-    // 2. Chuyển chữ thường để dễ tìm từ khóa
     var tuKhoa = cauHoi.toLowerCase();
     var cauTraLoi = "";
 
-    // 3. Xử lý Logic tìm từ khóa (Mô phỏng AI)
-// --- LOGIC XỬ LÝ TỪ KHÓA MỞ RỘNG (MÔ PHỎNG AI) ---
-    var tuKhoa = cauHoi.toLowerCase();
-    var cauTraLoi = "";
-
-    // 1. NHÓM GIẤC NGỦ
     if (tuKhoa.includes("ngủ") || tuKhoa.includes("mất ngủ") || tuKhoa.includes("khó ngủ") || 
         tuKhoa.includes("trằn trọc") || tuKhoa.includes("ngủ không ngon") || tuKhoa.includes("ngủ ít")) {
         cauTraLoi = "Dạ, để ngủ ngon hơn, ông bà nên ngâm chân nước gừng ấm trước khi ngủ, tránh uống trà xanh hay cà phê sau 4 giờ chiều và giữ phòng tối, yên tĩnh ạ.";
     } 
-
-    // 2. NHÓM THỜI TIẾT
     else if (tuKhoa.includes("thời tiết") || tuKhoa.includes("nắng") || tuKhoa.includes("mưa") || 
-             tuKhoa.includes("bão") || tuKhoa.includes("lạnh") || tuKhoa.includes("nóng") || tuKhoa.includes("dự báo")) {
+             tuKhoa.includes("bão") || tuKhoa.includes("lạnh") || tuKhoa.includes("nóng") || tuKhoa.includes("dự báo")|| tuKhoa.includes("mệt")) {
         cauTraLoi = "Dạ, dạo này thời tiết hay thay đổi thất thường. Nếu trời lạnh ông bà nhớ quàng khăn ấm, còn nếu nắng gắt thì nên ở trong nhà cho mát, đừng ra ngoài lúc giữa trưa ông bà nhé.";
     } 
-
-    // 3. NHÓM DINH DƯỠNG & ĂN UỐNG
     else if (tuKhoa.includes("ăn") || tuKhoa.includes("uống") || tuKhoa.includes("đói") || 
              tuKhoa.includes("tiêu hóa") || tuKhoa.includes("món gì") || tuKhoa.includes("đầy bụng")) {
         cauTraLoi = "Dạ, ở tuổi mình ông bà nên ăn thức ăn mềm, nấu chín kỹ và chia nhỏ bữa ăn ạ. Ông bà nhớ ăn nhiều rau xanh, bớt muối và uống đủ nước mỗi ngày để tốt cho tiêu hóa nhé.";
     }
-
-    // 4. NHÓM VẬN ĐỘNG & XƯƠNG KHỚP
     else if (tuKhoa.includes("đi bộ") || tuKhoa.includes("tập thể dục") || tuKhoa.includes("vận động") || 
              tuKhoa.includes("đau lưng") || tuKhoa.includes("mỏi gối") || tuKhoa.includes("xương khớp")) {
         cauTraLoi = "Dạ, việc vận động nhẹ nhàng rất tốt ạ. Ông bà có thể đi bộ chậm vào buổi sáng hoặc tập các động tác xoay khớp cổ tay, cổ chân nhẹ nhàng tại chỗ để khí huyết lưu thông ạ.";
     }
-
-    // 5. NHÓM CẢM XÚC & TÂM SỰ (GIẢM CÔ ĐƠN)
     else if (tuKhoa.includes("buồn") || tuKhoa.includes("chán") || tuKhoa.includes("cô đơn") || 
              tuKhoa.includes("nhớ con") || tuKhoa.includes("nhớ cháu") || tuKhoa.includes("một mình")) {
         cauTraLoi = "Ông bà đừng buồn nhé, có con ở đây trò chuyện cùng ông bà mà. Hay là ông bà gọi điện cho các cháu qua Zalo một chút cho vui cửa vui nhà được không ạ?";
     }
-
-    // 6. NHÓM HỖ TRỢ CÔNG NGHỆ
     else if (tuKhoa.includes("điện thoại") || tuKhoa.includes("zalo") || tuKhoa.includes("facebook") || 
              tuKhoa.includes("gọi điện") || tuKhoa.includes("mạng") || tuKhoa.includes("wifi")) {
         cauTraLoi = "Dạ, dùng điện thoại lúc đầu hơi khó một chút nhưng từ từ sẽ quen ạ. Nếu có chỗ nào chưa rõ, ông bà cứ hỏi con hoặc đợi các cháu về hướng dẫn thêm cho nhanh nhé.";
     }
-
-    // 7. NHÓM CẢNH BÁO SỨC KHỎE KHẨN CẤP
     else if (tuKhoa.includes("đau đầu") || tuKhoa.includes("chóng mặt") || tuKhoa.includes("tức ngực") || 
              tuKhoa.includes("ngã") || tuKhoa.includes("té") || tuKhoa.includes("cấp cứu")) {
         cauTraLoi = "Trời ơi, ông bà đang thấy không khỏe ạ? Ông bà hãy ngồi xuống ngay lập tức và gọi thật to để con cháu biết, hoặc nhấn nút gọi khẩn cấp trên điện thoại ngay đi ạ!";
     }
-
-    // 8. NHÓM CHÀO HỎI & KHEN NGỢI
     else if (tuKhoa.includes("chào") || tuKhoa.includes("hello") || tuKhoa.includes("tên gì") || 
              tuKhoa.includes("giỏi") || tuKhoa.includes("ngoan")) {
         cauTraLoi = "Dạ, con cảm ơn ông bà ạ! Con là Trợ lý Silver Digital, luôn sẵn sàng lắng nghe và hỗ trợ ông bà mọi lúc mọi nơi.";
@@ -337,17 +315,15 @@ function hoiTroLy() {
              tuKhoa.includes("gia đình mình") || tuKhoa.includes("các con") || tuKhoa.includes("các cháu")) {
         cauTraLoi = "Dạ, gia đình là điều quý giá nhất ạ. Ông bà có muốn kể cho con nghe về các cháu, về những kỷ niệm đẹp với gia đình mình không ạ?";
     }
-    else if (tuKhoa.includes("thời gian") || tuKhoa.includes("ngày tháng") || tuKhoa.includes("hôm nay") || 
+    else if (tuKhoa.includes("thời gian") || tuKhoa.includes("ngày tháng")  || 
              tuKhoa.includes("bây giờ") || tuKhoa.includes("mấy giờ")) {
         var ngayGio = new Date();
         cauTraLoi = `Dạ, bây giờ là ${ngayGio.getHours()} giờ ${ngayGio.getMinutes()} phút ngày ${ngayGio.getDate()}/${ngayGio.getMonth()+1}/${ngayGio.getFullYear()} ạ.`;
     }
-    // 9. TRƯỜNG HỢP KHÔNG CÓ TỪ KHÓA NÀO KHỚP
     else {
         cauTraLoi = "Dạ, ý của ông bà là sao ạ? Con chưa hiểu rõ lắm, ông bà có thể nói cụ thể hơn về sức khỏe, thời tiết hoặc chuyện gia đình được không ạ?";
     }
 
-    // 4. In câu trả lời của Bot và Đọc lên (sau 0.5s để tạo cảm giác AI đang suy nghĩ)
     setTimeout(() => {
         vungChat.innerHTML += `<div class="tin-nhan-bot">🤖 ${cauTraLoi}</div>`;
         vungChat.scrollTop = vungChat.scrollHeight;
@@ -355,13 +331,11 @@ function hoiTroLy() {
     }, 500);
 }
 
-// Cho phép bấm phím "Enter" để gửi tin nhắn thay vì phải bấm nút
 document.getElementById('cau-hoi-ai').addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
         hoiTroLy();
     }
 });
-
 
 // --- MODULE 1: LỪA ĐẢO ---
 var danhSachTinNhan = [
@@ -391,31 +365,31 @@ function dongThongBao() {
 // --- MODULE 2: QUÉT QR ---
 var mayQuet;
 var dangXuLy = false; 
+
 function moCamera() {
     const vungHienThiKetQua = document.getElementById('ket-qua-qr');
     vungHienThiKetQua.innerText = "Đang tìm mã QR...";
+    vungHienThiKetQua.style.color = "black"; // Trả lại màu chữ bình thường
+
     if (!mayQuet) { mayQuet = new Html5Qrcode("khu-vuc-cam"); }
+    
     mayQuet.start(
         { facingMode: "environment" }, { fps: 15, qrbox: 250 },
         function(ketQua) {
             if (!dangXuLy) { 
-                dangXuLy = true; 
-                vungHienThiKetQua.innerText = "Đã tìm thấy: " + ketQua;
-                vungHienThiKetQua.style.color = "#28a745"; 
-                noi("Con đã thấy mã rồi ạ. Đang kiểm tra nội dung.");
-                if (ketQua.startsWith("http")) {
-                    setTimeout(function() {
-                        window.open(ketQua, '_blank');
-                        setTimeout(() => { 
-                            dangXuLy = false; 
-                            vungHienThiKetQua.innerText = "Đang tìm mã tiếp theo...";
-                            vungHienThiKetQua.style.color = "black";
-                        }, 3000);
-                    }, 1000);
-                } else {
-                    alert("Nội dung mã: " + ketQua);
+                dangXuLy = true; // Khóa lại để xử lý
+
+                // Hiện thông báo thành công và đọc lên
+                vungHienThiKetQua.innerText = "Quét mã thành công!";
+                vungHienThiKetQua.style.color = "#28a745"; // Đổi màu xanh lá
+                noi("Dạ, quét mã thành công rồi ạ!");
+
+                // Nghỉ 3 giây rồi cho phép quét tiếp
+                setTimeout(() => { 
                     dangXuLy = false; 
-                }
+                    vungHienThiKetQua.innerText = "Đang tìm mã tiếp theo...";
+                    vungHienThiKetQua.style.color = "black";
+                }, 3000);
             }
         }, function(loi) {}
     ).catch(err => {
