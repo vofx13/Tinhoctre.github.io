@@ -192,6 +192,15 @@
             <button class="nut-bam nut-xanh" onclick="dongThongBao()">Tôi đã hiểu</button>
         </div>
     </div>
+
+    <div id="thong-bao-thuoc-hien-thi" class="lop-nen-mo">
+        <div class="hop-noi-dung" style="border-color: #28a745;">
+            <div style="font-size: 60px;">💊</div>
+            <h2 style="color: #28a745;">ĐẾN GIỜ UỐNG THUỐC!</h2>
+            <p id="ten-thuoc-hien-thi"></p>
+            <button class="nut-bam nut-xanh" onclick="dongThongBaoThuoc()">Tôi đã uống thuốc rồi</button>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -334,18 +343,14 @@ document.getElementById('cau-hoi-ai').addEventListener('keypress', function (e) 
     if (e.key === 'Enter') { hoiTroLy(); }
 });
 
-// --- MODULE 1: LỪA ĐẢO VÀ AN TOÀN (CẬP NHẬT MỚI) ---
-// Thêm nhãn "laLuaDao" để phân biệt tin thật và giả
+// --- MODULE 1: LỪA ĐẢO VÀ AN TOÀN ---
 var danhSachTinNhan = [
-    // --- CÁC TIN NHẮN LỪA ĐẢO ---
     { noiDung: '"Chúc mừng bạn trúng thưởng 1 tỷ đồng! Nhấn vào link: bit.ly/trung-thuong để nhận."', laLuaDao: true },
     { noiDung: '"Ngân hàng thông báo: Tài khoản của bạn sắp bị khóa. Xác minh tại: tinyurl.com/xac-minh"', laLuaDao: true },
     { noiDung: '"Bưu điện: Gói hàng của bạn đang bị giữ. Cập nhật địa chỉ: bit.ly/cap-nhat-dia-chi"', laLuaDao: true },
     { noiDung: '"Cảnh sát Giao thông Việt Nam: Hồ sơ vi phạm giao thông được lưu trữ dưới tên của bạn. Vui lòng truy cập https://dichvucongg.top/vn"', laLuaDao: true },
     { noiDung: '"Bạn có một tin nhắn thoại mới. Nghe ngay tại: bit.ly/nghe-tin-nhan"', laLuaDao: true },
     { noiDung: '"Chung toi phat hien tai khoan cua ban dang tieu dung o nuoc ngoai, vui long dang nhap sacombank.vn-i.xyz de huy giao dich"', laLuaDao: true },
-    
-    // --- CÁC TIN NHẮN AN TOÀN (MỚI THÊM) ---
     { noiDung: '"Viettel: Tai khoan cua quy khach con 15.000d. Vui long nap them de khong gian doan lien lac."', laLuaDao: false },
     { noiDung: '"Con gái: Mẹ ơi, cuối tuần này vợ chồng con cho các cháu về chơi với ông bà nhé!"', laLuaDao: false },
     { noiDung: '"Cháu nội: Ông nội ơi, con vừa thi học kỳ xong, con được điểm 10 toán ạ!"', laLuaDao: false },
@@ -353,7 +358,7 @@ var danhSachTinNhan = [
     { noiDung: '"Dự báo thời tiết: Đêm nay có mưa rào rải rác. Nhiệt độ thấp nhất 22 độ C."', laLuaDao: false }
 ];
 
-var tinNhanHienTai = null; // Biến lưu trữ tin nhắn đang hiển thị trên màn hình
+var tinNhanHienTai = null;
 
 function randomTinNhan() {
     var randomIndex = Math.floor(Math.random() * danhSachTinNhan.length);
@@ -363,26 +368,20 @@ function randomTinNhan() {
 
 function bamNut(nhanLink) {
     if (tinNhanHienTai.laLuaDao) {
-        // Nếu là tin lừa đảo
         if (nhanLink) {
-            // Ông bà lỡ bấm nút Đỏ (Xem/Trả lời)
             document.getElementById('thong-bao-gia').style.display = 'flex';
             noi("Ông bà ơi, đừng bấm! Đây là lừa đảo đấy.");
         } else {
-            // Ông bà bấm nút Xanh (Xóa tin)
             alert("Đúng rồi ạ! Ông bà giỏi quá.");
             noi("Đúng rồi ạ! Ông bà rất cảnh giác. Hãy xóa tin nhắn này đi cho an toàn.");
             randomTinNhan(); 
         }
     } else {
-        // Nếu là tin an toàn (Con cháu, tổng đài thật)
         if (nhanLink) {
-            // Ông bà bấm nút Đỏ (Xem/Trả lời) -> An toàn
             alert("Tuyệt vời! Đây là tin nhắn an toàn.");
             noi("Dạ đúng rồi, đây là tin nhắn an toàn từ người quen hoặc tổng đài, ông bà có thể xem ạ.");
             randomTinNhan();
         } else {
-            // Ông bà bấm nút Xanh (Xóa tin) -> Cũng không sao
             alert("Ông bà đã xóa tin nhắn.");
             noi("Dạ, đây là tin nhắn thật, nhưng ông bà xóa đi cho nhẹ máy cũng được ạ.");
             randomTinNhan();
@@ -442,6 +441,7 @@ function themThuoc() {
     document.getElementById('ten-thuoc').value = "";
     document.getElementById('gio-uong').value = "";
 }
+
 function hienThiThuoc() {
     var vungHienThi = document.getElementById('danh-sach-thuoc');
     vungHienThi.innerHTML = "";
@@ -454,24 +454,38 @@ function hienThiThuoc() {
     }
 }
 
+// MỚI THÊM: HÀM ĐÓNG THÔNG BÁO THUỐC
+function dongThongBaoThuoc() {
+    document.getElementById('thong-bao-thuoc-hien-thi').style.display = 'none';
+}
+
 // --- CHẠY BAN ĐẦU ---
 randomTinNhan();
 hienThiThuoc();
 var thuocDaNhac = {}; 
+
 setInterval(function() {
     var gioHeThong = new Date();
+    // Format giờ hệ thống chuẩn HH:mm
     var gioPhut = gioHeThong.getHours().toString().padStart(2, '0') + ":" + 
                   gioHeThong.getMinutes().toString().padStart(2, '0');
     var ngayHienTai = gioHeThong.toDateString();
+    
     for(var i=0; i<dsThuoc.length; i++) {
-        var keyNhac = ngayHienTai + "_" + gioPhut + "_" + dsThuoc[i].ten;
-        if(dsThuoc[i].gio === gioPhut && !thuocDaNhac[keyNhac]) {
+        // Cắt chuỗi để lấy đúng định dạng HH:mm phòng trường hợp trình duyệt lưu thêm giây
+        var gioThuoc = dsThuoc[i].gio.substring(0, 5); 
+        var keyNhac = ngayHienTai + "_" + gioThuoc + "_" + dsThuoc[i].ten;
+        
+        if(gioThuoc === gioPhut && !thuocDaNhac[keyNhac]) {
+            // HIỂN THỊ BOX THÔNG BÁO LÊN MÀN HÌNH
+            document.getElementById('ten-thuoc-hien-thi').innerText = "Thuốc: " + dsThuoc[i].ten;
+            document.getElementById('thong-bao-thuoc-hien-thi').style.display = 'flex';
+            
             noi("Ông bà ơi, đến giờ uống thuốc " + dsThuoc[i].ten + " rồi ạ!");
-            alert("ĐẾN GIỜ UỐNG THUỐC: " + dsThuoc[i].ten);
             thuocDaNhac[keyNhac] = true; 
         }
     }
-}, 30000);
+}, 1000); // Check mỗi 1 giây (1000ms) để hiện thông báo ngay lập tức
 
 </script>
 </body>
