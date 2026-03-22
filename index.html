@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>SILVER DIGITAL - TRỢ LÝ CỦA ÔNG BÀ</title>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    
+    <style>
+        /* PHẦN GIAO DIỆN (CSS) */
+        body {
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Khung điện thoại giả lập */
+        .dien-thoai {
+            width: 360px;
+            height: 640px;
+            background: white;
+            border: 10px solid #333;
+            border-radius: 30px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .tieu-de-trang {
+            background: #007bff;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-weight: bold;
+        }
+
+        /* Các màn hình */
+        .man-hinh {
+            flex: 1;
+            padding: 15px;
+            display: none; /* Mặc định ẩn hết */
+        }
+
+        .dang-hien-thi {
+            display: block; /* Chỉ hiện màn hình nào có class này */
+        }
+
+        /* Nút bấm cho ông bà (phải to và rõ) */
+        .nut-bam {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            font-size: 18px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .nut-xanh { background: #28a745; color: white; }
+        .nut-do { background: #dc3545; color: white; }
+        .nut-vang { background: #ffc107; }
+
+        .tin-nhan-mau {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            border-left: 5px solid #007bff;
+        }
+
+        /* Thanh menu dưới cùng */
+        .menu-duoi {
+            height: 50px;
+            background: #eee;
+            display: flex;
+            border-top: 1px solid #ccc;
+        }
+
+        .nut-menu {
+            flex: 1;
+            text-align: center;
+            padding-top: 15px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .nut-menu.chon {
+            background: #ddd;
+            color: #007bff;
+        }
+
+        /* --- PHẦN CSS CHO HỘP THÔNG BÁO --- */
+        /* Lớp nền mờ bao phủ màn hình điện thoại */
+        .lop-nen-mo {
+            display: none; /* Mặc định ẩn */
+            position: absolute; /* Chỉ bao phủ trong khung .dien-thoai */
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7); /* Làm tối nền xung quanh */
+            z-index: 9999; /* Luôn nằm trên cùng */
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Khung nội dung chính của thông báo */
+        .hop-noi-dung {
+            background: white;
+            width: 85%;
+            padding: 30px 20px;
+            border-radius: 20px;
+            text-align: center;
+            border: 5px solid #dc3545; /* Viền đỏ nổi bật */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .hop-noi-dung h2 {
+            color: #dc3545;
+            margin: 10px 0;
+            font-size: 24px;
+        }
+
+        .hop-noi-dung p {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="dien-thoai">
+    <div class="tieu-de-trang">SILVER DIGITAL</div>
+
+    <div id="man-lua-dao" class="man-hinh dang-hien-thi">
+        <h3>Cảnh giác lừa đảo</h3>
+        <p>Có tin nhắn mới:</p>
+        <div class="tin-nhan-mau" id="noi-dung-tin">
+            </div>
+        <button class="nut-bam nut-do" onclick="bamNut(true)">Nhấn vào link</button>
+        <button class="nut-bam nut-xanh" onclick="bamNut(false)">Xóa tin nhắn</button>
+    </div>
+
+    <div id="man-qr" class="man-hinh">
+        <h3>Tập quét mã QR</h3>
+        <div id="khu-vuc-cam" style="width: 100%; height: 200px; background: #000; border-radius: 10px; overflow: hidden;"></div>
+        <button class="nut-bam nut-vang" onclick="moCamera()">Bật Camera</button>
+        <p id="ket-qua-qr" style="word-break: break-all;">Chưa quét được gì...</p>
+    </div>
+
+    <div id="man-thuoc" class="man-hinh">
+        <h3>Nhắc uống thuốc</h3>
+        <input type="text" id="ten-thuoc" placeholder="Tên thuốc..." style="width:90%;padding:10px;margin-bottom: 5px; font-size: 16px;">
+        <input type="time" id="gio-uong" style="width:90%; padding:10px; margin-bottom:10px; font-size: 16px;">
+        <button class="nut-bam nut-xanh" onclick="themThuoc()">Lưu lịch nhắc</button>
+        <div id="danh-sach-thuoc" style="margin-top: 15px; font-size: 18px;"></div>
+    </div>
+
+    <div class="menu-duoi">
+        <div class="nut-menu chon" onclick="doiTab('man-lua-dao', this)">🛡️ An toàn</div>
+        <div class="nut-menu" onclick="doiTab('man-qr', this)">📷 Quét mã</div>
+        <div class="nut-menu" onclick="doiTab('man-thuoc', this)">💊 Thuốc</div>
+    </div>
+
+    <div id="thong-bao-gia" class="lop-nen-mo">
+        <div class="hop-noi-dung">
+            <div style="font-size: 60px;">⚠️</div>
+            <h2>CẢNH BÁO NGUY HIỂM!</h2>
+            <p>Ông bà ơi, đừng bấm! Đây là lừa đảo đấy.</p>
+            <button class="nut-bam nut-xanh" onclick="dongThongBao()">Con đã hiểu rồi ạ</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Dữ liệu tin nhắn mẫu
+    var danhSachTinNhan = [
+        '"Chúc mừng bạn trúng thưởng 1 tỷ đồng! Nhấn vào link: bit.ly/trung-thuong để nhận."',
+        '"Ngân hàng thông báo: Tài khoản của bạn sắp bị khóa. Xác minh tại: tinyurl.com/xac-minh"',
+        '"Bưu điện: Gói hàng của bạn đang bị giữ. Cập nhật địa chỉ: bit.ly/cap-nhat-dia-chi"',
+        '"Cơ hội đầu tư sinh lời 300% trong 24h! Đăng ký ngay: bit.ly/dau-tu-loi"',
+        '"Công an tỉnh: Tài khoản bạn liên quan đến vụ án. Hợp tác tại: bit.ly/cong-an"',
+        '"Thẻ tín dụng của bạn đã bị khóa do nợ quá hạn. Gia hạn: bit.ly/gia-han-the"',
+        '"Bạn trúng iPhone 16 Pro Max miễn phí! Nhận ngay: bit.ly/nhan-iphone"',
+        '"Mạng di động tặng 500.000đ tiền nạp. Xác nhận: bit.ly/nap-tien"',
+        '"Tuyển dụng làm việc tại nhà, thu nhập 20tr/tháng. Đăng ký: bit.ly/viec-lam"',
+        '"Facebook thông báo: Phát hiện đăng nhập lạ. Xác minh: bit.ly/bao-mat-fb"'
+    ];
+
+    // --- CÁC HÀM CHUNG ---
+
+    // Hàm random tin nhắn
+    function randomTinNhan() {
+        var randomIndex = Math.floor(Math.random() * danhSachTinNhan.length);
+        var tinNhanMoi = danhSachTinNhan[randomIndex];
+        document.getElementById('noi-dung-tin').innerHTML = tinNhanMoi;
+    }
+
+    // Hàm đọc giọng nói hướng dẫn cho ông bà
+    function noi(vanBan) {
+        if ('speechSynthesis' in window) {
+            // Hủy các câu đang đọc dở để đọc câu mới ngay
+            window.speechSynthesis.cancel();
+            var loiNoi = new SpeechSynthesisUtterance(vanBan);
+            loiNoi.lang = 'vi-VN';
+            window.speechSynthesis.speak(loiNoi);
+        }
+    }
+
+    // Hàm chuyển màn hình
+    function doiTab(idManHinh, nut) {
+        // Ẩn hết các màn hình đi
+        var tatca = document.getElementsByClassName('man-hinh');
+        for(var i=0; i<tatca.length; i++) {
+            tatca[i].classList.remove('dang-hien-thi');
+        }
+        
+        // Hiện màn hình cần xem
+        document.getElementById(idManHinh).classList.add('dang-hien-thi');
+
+        // Đổi màu nút menu
+        var tatcaNut = document.getElementsByClassName('nut-menu');
+        for(var i=0; i<tatcaNut.length; i++) {
+            tatcaNut[i].classList.remove('chon');
+        }
+        nut.classList.add('chon');
+
+        // Nếu camera đang bật mà chuyển tab khác thì tắt camera
+        if (idManHinh !== 'man-qr' && mayQuet) {
+            mayQuet.stop().catch(err => console.log("Camera đã tắt"));
+        }
+
+        // Làm mới tin nhắn random khi chuyển qua trang Quét mã hoặc Thuốc (để khi quay lại có tin mới)
+        if (idManHinh === 'man-qr' || idManHinh === 'man-thuoc') {
+            randomTinNhan();
+        }
+    }
+
+    // --- LOGIC MODULE LỪA ĐẢO ---
+
+    // Hàm xử lý khi nhấn nút trong màn hình An toàn
+    function bamNut(coLua) {
+        if(coLua) {
+            // HIỆN HỘP THÔNG BÁO CSS TÙY CHỈNH
+            document.getElementById('thong-bao-gia').style.display = 'flex';
+            noi("Ông bà ơi, đừng bấm! Đây là lừa đảo đấy.");
+        } else {
+            // Dùng alert mặc định cho trường hợp đúng để phân biệt
+            alert("Đúng rồi ạ! Ông bà giỏi quá.");
+            noi("Đúng rồi ạ! Ông bà rất cảnh giác. Hãy xóa tin nhắn này đi cho an toàn.");
+            randomTinNhan(); // Làm mới tin nhắn sau khi xóa thành công
+        }
+    }
+
+    // Hàm để đóng thông báo cảnh báo lừa đảo
+    function dongThongBao() {
+        document.getElementById('thong-bao-gia').style.display = 'none';
+        // Khi đóng, có thể random tin mới luôn
+        randomTinNhan();
+    }
+
+    // --- LOGIC MODULE QUÉT QR ---
+// --- LOGIC MODULE QUÉT QR (Đã cập nhật tính năng mở link) ---
+// --- LOGIC QUÉT QR TỰ ĐỘNG ---
+var mayQuet;
+var dangXuLy = false; // Biến khóa để tránh mở 1 link nhiều lần cùng lúc
+
+function moCamera() {
+    const vungHienThiKetQua = document.getElementById('ket-qua-qr');
+    vungHienThiKetQua.innerText = "Đang tìm mã QR...";
+    
+    if (!mayQuet) {
+        mayQuet = new Html5Qrcode("khu-vuc-cam");
+    }
+
+    mayQuet.start(
+        { facingMode: "environment" }, 
+        { 
+            fps: 15,    // Tăng tốc độ khung hình để nhận diện nhạy hơn
+            qrbox: 250  // Khung quét to hơn cho ông bà dễ căn chỉnh
+        },
+        function(ketQua) {
+            // NẾU PHÁT HIỆN MÃ QR:
+            if (!dangXuLy) { 
+                dangXuLy = true; // Khóa lại để xử lý xong cái này đã
+                
+                vungHienThiKetQua.innerText = "Đã tìm thấy: " + ketQua;
+                vungHienThiKetQua.style.color = "#28a745"; // Đổi màu chữ cho dễ nhìn
+                
+                // 1. Thông báo bằng giọng nói
+                noi("Con đã thấy mã rồi ạ. Đang kiểm tra nội dung.");
+
+                // 2. Kiểm tra nếu là đường link web
+                if (ketQua.startsWith("http")) {
+                    setTimeout(function() {
+                        window.open(ketQua, '_blank');
+                        // Sau 3 giây mới cho phép quét mã tiếp theo (tránh lặp lại)
+                        setTimeout(() => { 
+                            dangXuLy = false; 
+                            vungHienThiKetQua.innerText = "Đang tìm mã tiếp theo...";
+                            vungHienThiKetQua.style.color = "black";
+                        }, 3000);
+                    }, 1000);
+                } else {
+                    // Nếu là văn bản bình thường (không phải link)
+                    alert("Nội dung mã: " + ketQua);
+                    dangXuLy = false; // Mở khóa ngay để quét mã khác
+                }
+            }
+        },
+        function(loi) {
+            // Hàm này chạy liên tục khi chưa thấy mã, cứ để trống để camera quét mượt
+        }
+    ).catch(err => {
+        vungHienThiKetQua.innerText = "Lỗi: " + err;
+        noi("Camera chưa sẵn sàng ạ.");
+    });
+}
+    var dsThuoc = [];
+    function themThuoc() {
+        var ten = document.getElementById('ten-thuoc').value;
+        var gio = document.getElementById('gio-uong').value;
+        if(ten == "" || gio == "") {
+            alert("Vui lòng điền đủ tên thuốc và giờ!");
+            return;
+        }
+        dsThuoc.push({ten: ten, gio: gio});
+        hienThiThuoc();
+        noi("Con đã ghi nhớ lịch uống thuốc " + ten + " lúc " + gio + " rồi ạ.");
+        // Xóa ô nhập
+        document.getElementById('ten-thuoc').value = "";
+        document.getElementById('gio-uong').value = "";
+    }
+
+    function hienThiThuoc() {
+        var vungHienThi = document.getElementById('danh-sach-thuoc');
+        vungHienThi.innerHTML = "";
+        if (dsThuoc.length === 0) {
+            vungHienThi.innerHTML = "<p style='color: #666; font-style: italic;'>Chưa có lịch nhắc nào.</p>";
+            return;
+        }
+        for(var i=0; i<dsThuoc.length; i++) {
+            vungHienThi.innerHTML += "<p style='margin: 5px 0;'>✅ <b>" + dsThuoc[i].gio + "</b>: " + dsThuoc[i].ten + "</p>";
+        }
+    }
+
+    // --- KHỞI TẠO BAN ĐẦU ---
+    
+    // Random tin nhắn khi trang load
+    randomTinNhan();
+    // Hiển thị danh sách thuốc trống
+    hienThiThuoc();
+
+    // Kiểm tra giờ để nhắc thuốc mỗi 30 giây
+    var thuocDaNhac = {}; // Lưu lại để không nhắc liên tục trong cùng 1 phút
+
+    setInterval(function() {
+        var gioHeThong = new Date();
+        var gioPhut = gioHeThong.getHours().toString().padStart(2, '0') + ":" + 
+                      gioHeThong.getMinutes().toString().padStart(2, '0');
+        var ngayHienTai = gioHeThong.toDateString();
+        
+        for(var i=0; i<dsThuoc.length; i++) {
+            var keyNhac = ngayHienTai + "_" + gioPhut + "_" + dsThuoc[i].ten;
+            if(dsThuoc[i].gio === gioPhut && !thuocDaNhac[keyNhac]) {
+                noi("Ông bà ơi, đến giờ uống thuốc " + dsThuoc[i].ten + " rồi ạ!");
+                alert("ĐẾN GIỜ UỐNG THUỐC: " + dsThuoc[i].ten);
+                thuocDaNhac[keyNhac] = true; // Đánh dấu đã nhắc
+            }
+        }
+    }, 30000);
+
+</script>
+</body>
+</html>
