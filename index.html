@@ -2,29 +2,34 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SILVER DIGITAL - TRỢ LÝ CỦA ÔNG BÀ</title>
     <script src="https://unpkg.com/html5-qrcode"></script>
     
     <style>
         /* PHẦN GIAO DIỆN (CSS) */
         body {
-            background-color: #f0f0f0;
+            background-color: #333; /* Đổi màu nền ngoài để nổi bật app nếu xem trên PC */
             font-family: Arial, sans-serif;
+            margin: 0; /* Xóa margin mặc định để fit màn hình */
             display: flex;
             justify-content: center;
+            height: 100vh; /* Chiều cao bằng đúng màn hình */
         }
 
         .dien-thoai {
-            width: 360px;
-            height: 640px;
+            width: 100%; /* Rộng 100% trên điện thoại */
+            max-width: 450px; /* Giới hạn chiều rộng nếu xem trên máy tính */
+            height: 100%; /* Cao 100% */
             background: white;
-            border: 10px solid #333;
-            border-radius: 30px;
+            /* Xóa viền giả lập điện thoại để fit màn hình thật */
+            border: none;
+            border-radius: 0;
             position: relative;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            margin-top: 20px;
+            margin-top: 0;
         }
 
         .tieu-de-trang {
@@ -110,6 +115,7 @@
             text-align: center;
             border: 5px solid #dc3545; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-sizing: border-box;
         }
 
         .hop-noi-dung h2 { color: #dc3545; margin: 10px 0; font-size: 24px; }
@@ -199,6 +205,15 @@
             <h2 style="color: #28a745;">ĐẾN GIỜ UỐNG THUỐC!</h2>
             <p id="ten-thuoc-hien-thi"></p>
             <button class="nut-bam nut-xanh" onclick="dongThongBaoThuoc()">Tôi đã uống thuốc rồi</button>
+        </div>
+    </div>
+
+    <div id="thong-bao-qr" class="lop-nen-mo">
+        <div class="hop-noi-dung" style="border-color: #ffc107;">
+            <div style="font-size: 60px;">📸</div>
+            <h2 style="color: #ffc107;">QUÉT THÀNH CÔNG!</h2>
+            <p id="noi-dung-qr-thanh-cong" style="font-size: 16px; word-break: break-all;"></p>
+            <button class="nut-bam nut-vang" onclick="dongThongBaoQR()">Đóng</button>
         </div>
     </div>
 </div>
@@ -394,9 +409,10 @@ function dongThongBao() {
     randomTinNhan();
 }
 
-// --- MODULE 2: QUÉT QR ---
+// --- MODULE 2: QUÉT QR (ĐÃ CẬP NHẬT TẮT CAMERA & HIỆN BOX) ---
 var mayQuet;
 var dangXuLy = false; 
+
 function moCamera() {
     const vungHienThiKetQua = document.getElementById('ket-qua-qr');
     vungHienThiKetQua.innerText = "Đang tìm mã QR...";
@@ -413,17 +429,30 @@ function moCamera() {
                 vungHienThiKetQua.style.color = "#28a745"; 
                 noi("Dạ, quét mã thành công rồi ạ!");
 
-                setTimeout(() => { 
-                    dangXuLy = false; 
-                    vungHienThiKetQua.innerText = "Đang tìm mã tiếp theo...";
-                    vungHienThiKetQua.style.color = "black";
-                }, 3000);
+                // Hiển thị nội dung vào box và bật box lên
+                document.getElementById('noi-dung-qr-thanh-cong').innerText = "Nội dung: " + ketQua;
+                document.getElementById('thong-bao-qr').style.display = 'flex';
+
+                // Tự động tắt camera sau khi quét thành công
+                mayQuet.stop().then(function() {
+                    console.log("Đã tự động tắt camera");
+                }).catch(function(err) {
+                    console.log("Lỗi khi tắt camera: ", err);
+                });
             }
         }, function(loi) {}
     ).catch(err => {
         vungHienThiKetQua.innerText = "Lỗi: " + err;
         noi("Camera chưa sẵn sàng ạ.");
     });
+}
+
+// Hàm đóng thông báo QR
+function dongThongBaoQR() {
+    document.getElementById('thong-bao-qr').style.display = 'none';
+    dangXuLy = false; // Reset trạng thái
+    document.getElementById('ket-qua-qr').innerText = "Chưa quét được gì...";
+    document.getElementById('ket-qua-qr').style.color = "black";
 }
 
 // --- MODULE 3: THUỐC ---
@@ -454,7 +483,7 @@ function hienThiThuoc() {
     }
 }
 
-// MỚI THÊM: HÀM ĐÓNG THÔNG BÁO THUỐC
+// HÀM ĐÓNG THÔNG BÁO THUỐC
 function dongThongBaoThuoc() {
     document.getElementById('thong-bao-thuoc-hien-thi').style.display = 'none';
 }
